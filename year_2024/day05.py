@@ -42,8 +42,7 @@ def find_correct_or_not(graph, lines):
 
 
 def order(c, graph):
-    response = sorted(c, key=cmp_to_key(lambda a, b: 1 if b in graph[a] else -1))
-    return response
+    return sorted(c, key=cmp_to_key(lambda a, b: 1 if b in graph[a] else -1))
 
 
 def part1(ls: str) -> int:
