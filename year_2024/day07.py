@@ -10,6 +10,7 @@ from functools import cmp_to_key
 DIR = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 CLOCKWISE = "^>v<"
 
+
 def transpose(ls: Iterator):
     return list(map(list, zip(*ls)))
 
@@ -23,44 +24,34 @@ def parse_data(brut_data: str) -> list[int]:
     return lines
 
 
-def can_do(key,values,part):
-    n = len(values)-1
-    for combi in product(range(part),repeat=n):
+def can_do(line, part):
+    key, values = line
+
+    key = int(key)
+    values = list(map(int, values.split()))
+
+    for combi in product(range(part), repeat=len(values) - 1):
         result = values[0]
         for i, op in enumerate(combi):
             if op == 0:
-                result+=values[1+i]
+                result += values[1 + i]
             if op == 1:
-                result*=values[i+1]
+                result *= values[i + 1]
             if op == 2:
-                temp=str(result)
-                temp+=str(values[i+1])
-                result=int(temp)
+                result = int(str(result) + str(values[i + 1]))
         if result == key:
-            return True
-    return False
+            return result
+    return 0
 
 
 def part1(ls: str) -> int:
     lines = parse_data(ls)
-    response = 0
-    for key, values in lines:
-        key = int(key)
-        values = list(map(int, values.split()))
-        if can_do(key, values, 2):
-            response+=key
-    return response
+    return sum(can_do(line, 2) for line in lines)
 
 
 def part2(ls: str) -> int:
     lines = parse_data(ls)
-    response = 0
-    for key, values in lines:
-        key = int(key)
-        values = list(map(int, values.split()))
-        if can_do(key,values,3):
-            response+=key
-    return response
+    return sum(can_do(line, 3) for line in lines)
 
 
 response = part1
