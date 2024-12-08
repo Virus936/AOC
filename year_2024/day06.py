@@ -52,14 +52,11 @@ def part1(ls: str) -> int:
     start, lines = parse_data(ls)
     response = 0
     mem = set()
-    trace = deepcopy(lines)
     for r, c, _ in parcourir(start, lines):
         if (r, c) in mem:
             continue
         mem.add((r, c))
         response += 1
-        if response > 1:
-            trace[r][c] = "*"
     return response
 
 

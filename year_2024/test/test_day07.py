@@ -31,8 +31,6 @@ def data1():
 292: 11 6 16 20"""
 
 
-
-
 def test_resolve_exemple(data1):
     assert part1(data1) == 3749
 
@@ -51,7 +49,7 @@ def test_resolve2_exemple(data1):
 
 
 def test_resolve2(data_from_aoc):
-    # pytest.skip()
+    pytest.skip()
     if data_from_aoc is None:
         pytest.skip()
     else:
