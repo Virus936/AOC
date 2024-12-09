@@ -79,6 +79,17 @@ def antinode_beam_from_antena_pair(antenna1, antenna2, nrow, ncol):
     return antinodes
 
 
+def trace(ls):
+    return [["." for l in li] for li in ls.splitlines()]
+
+
+def pprint(trace):
+    print("")
+    for tr in trace:
+        print("".join(tr))
+    print("")
+
+
 def part1(ls: str) -> int:
     nrow, ncol, dict_antenna = parse_data(ls)
     set_antinode = set()
@@ -92,6 +103,10 @@ def part2(ls: str) -> int:
     set_antinode = set()
     for antennas in dict_antenna.values():
         set_antinode.update(compute_antinodes(antennas, nrow, ncol, 2))
+    tr = trace(ls)
+    for i, j in set_antinode:
+        tr[i][j] = "#"
+    pprint(tr)
     return len(set_antinode)
 
 
