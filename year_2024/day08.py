@@ -106,7 +106,6 @@ def part2(ls: str) -> int:
     tr = trace(ls)
     for i, j in set_antinode:
         tr[i][j] = "#"
-    pprint(tr)
     return len(set_antinode)
 
 
