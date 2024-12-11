@@ -35,47 +35,74 @@ def pprint(trace):
 
 
 def parse_data(brut_data: str) -> list[int]:
-    lines =[ ['.']+list(l)+['.'] for l in brut_data.strip().splitlines()]
-    lines = [['.']*len(lines[0])] + lines + [['.']*len(lines[0])] 
+    lines = [["."] + list(map(int, l)) + ["."] for l in brut_data.strip().splitlines()]
+    lines = [["."] * len(lines[0])] + lines + [["."] * len(lines[0])]
 
-    ends, starts = [], []
-    for r,line in enumerate(lines):
+    starts = []
+
+    for r, line in enumerate(lines):
         for c, p in enumerate(line):
-            if p=='.':continue
-            if int(p) == 9:
-                ends.append((r,c))
+            if p == ".":
+                continue
             if int(p) == 0:
-                starts.append((r,c))
-    return ends,starts,lines
+                starts.append((r, c))
+    return starts, lines
 
 
-def dfs(start,end, map):
-    x,y = start
-    response=0
+def dfs(start, end, map):
+    x, y = start
+    response = 0
     for dx, dy in DIR:
-        if map[x+dx][y+dy] == '.':
+        if map[x + dx][y + dy] == ".":
             continue
-        if int(map[x+dx][y+dy]) != int(map[x][y])+1:
+        if int(map[x + dx][y + dy]) != int(map[x][y]) + 1:
             continue
-        if end == (x+dx,y+dy):
+        if end == (x + dx, y + dy):
             return 1
-        response+=dfs((x+dx,y+dy), end, map)
+        response += dfs((x + dx, y + dy), end, map)
     return response
 
+
+def dp_all(start, map, memo: dict = {}):
+    x, y = start
+    if map[x][y] == 9:
+        return 1
+    if start in memo:
+        return memo[start]
+    memo[start] = 0
+    for dx, dy in DIR:
+        if map[x + dx][y + dy] == ".":
+            continue
+        if map[x + dx][y + dy] == map[x][y] + 1:
+            memo[start] += dp_all((x + dx, y + dy), map, memo)
+    return memo[start]
+
+
+def dp_count(start, map, memo: dict = {}):
+    x, y = start
+    resp = set()
+    if map[x][y] == 9:
+        resp.add(start)
+        return resp
+    if start in memo:
+        return memo[start]
+    memo[start] = set()
+    for dx, dy in DIR:
+        if map[x + dx][y + dy] == ".":
+            continue
+        if map[x + dx][y + dy] == map[x][y] + 1:
+            memo[start].update(dp_count((x + dx, y + dy), map, memo))
+    return memo[start]
+
+
 def part1(ls: str) -> int:
-    ends, starts, map = parse_data(ls)
-    return sum(
-        bool(dfs(start,end,map)) 
-        for start,end in product(starts,ends)
-        )
+    starts, map = parse_data(ls)
+    return sum(len(dp_count(start, map, {})) for start in starts)
 
 
 def part2(ls: str) -> int:
-    ends, starts, map = parse_data(ls)
-    return sum(
-        dfs(start,end,map) 
-        for start,end in product(starts,ends)
-        )
+    starts, map = parse_data(ls)
+    return sum(dp_all(start, map, {}) for start in starts)
 
 
 response = part2

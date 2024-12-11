@@ -68,25 +68,24 @@ def check_none_and_fill(disk):
         if d == current:
             continue
         if current is None:
-            empty_blocks.append((l, i))
+            empty_blocks.append([l, i])
         else:
             blocks.append((l, i))
         l, current = i, d
     else:
         if current is None:
-            empty_blocks.append((l, i+1))
+            empty_blocks.append([l, i + 1])
         else:
-            blocks.append((l, i+1))
+            blocks.append((l, i + 1))
     return empty_blocks, blocks
 
 
 def defragment_in_block(disk):
     emptys, filled = check_none_and_fill(disk)
     for fill in filled[::-1]:
-        find = False
-        for j in range(len(emptys)):
+        for empty in emptys:
             size_fill = fill[1] - fill[0]
-            xe1, xe2 = emptys[j]
+            xe1, xe2 = empty
             if xe1 > fill[0]:
                 continue
             if size_fill > xe2 - xe1:
@@ -95,10 +94,9 @@ def defragment_in_block(disk):
                 disk[i] = disk[fill[0]]
             for i in range(fill[0], fill[1]):
                 disk[i] = None
-            find = True
+            empty[0] += size_fill
             break
-        if find:
-            emptys[j] = (xe1 + size_fill, xe2)
+        # if find:
 
 
 def part1(ls: str) -> int:
