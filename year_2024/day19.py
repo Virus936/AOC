@@ -47,9 +47,9 @@ def is_valid(keys:Tuple[str], word:str):
     if word in keys:
         return True
     for key in keys:
-        if not word.startswith(key):continue
-        inside = is_valid(keys, word[len(key):])
-        if inside:
+        if not word.startswith(key):
+            continue
+        if is_valid(keys, word[len(key):]):
             return True
     return False
 
@@ -57,18 +57,17 @@ def is_valid(keys:Tuple[str], word:str):
 @lru_cache
 def count_valid(keys:Tuple[str], word:str):
     if word in keys:
-        return 1+count_valid(tuple([k for k in keys if k!=word]), word)
+        return 1+count_valid(tuple(k for k in keys if k!=word), word)
     resp = 0
     for key in keys:
         if not word.startswith(key):continue
-        count = count_valid(keys, word[len(key):])
-        resp+=count
+        resp += count_valid(keys, word[len(key):])
     return resp
 
 
 def part1(ls: str) -> int:
     keys, words = parse_data(ls)
-    return sum(is_valid(keys, word) for word in words)
+    return sum(is_valid(keys,word) for word in words)
 
 
 def part2(ls: str) -> int:
