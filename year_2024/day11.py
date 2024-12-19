@@ -39,21 +39,7 @@ def parse_data(brut_data: str) -> list[int]:
     return r[0]
 
 
-# def turn_stone(stone):
-#     response = [stone]
-#     if stone == 0:
-#         return [1]
-#     if len(str(stone))%2==0:
-#         return list(map(int,[
-#             str(stone)[:len(str(stone))//2],
-#             str(stone)[len(str(stone))//2:],
-#             ]))
-#     return [stone*2024]
-
-
 memo = {}
-
-
 def turn_stone(stone, times):
     if (stone, times) in memo:
         return memo[(stone, times)]
@@ -80,13 +66,6 @@ def turn_stone(stone, times):
         resp += turn_stone(s, times - 1)
 
     memo[(stone, times)] = resp
-    return resp
-
-
-def blink(stones):
-    resp = []
-    for stone in stones:
-        resp.extend(turn_stone(stone))
     return resp
 
 
