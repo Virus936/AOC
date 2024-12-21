@@ -41,12 +41,10 @@ def parse_data(brut_data: str) -> list[int]:
         for c, col in enumerate(row):
             if col == "S":
                 start = (r,c)
-            if col == "E":
-                end = (r,c)
             if col == "#":
                 walls.append((r,c))
 
-    return maze, len(maze[0]), len(maze), start, end, walls
+    return maze, start, walls
 
 from collections import deque
 
@@ -70,41 +68,43 @@ def bfs(maze, s):
     return visited
 
 
-def shortcut(walls, trace):
-    result = []
-    for r,c in walls:
-        if r==0 or c == 0:
-            continue
-        if r==len(trace)-1 or c == len(trace[0])-1:
-            continue
-        if trace[r+1][c]!=0 and trace[r-1][c]!=0:
-            re = abs(trace[r+1][c] - trace[r-1][c])
-            result.append(re-2)
-        if trace[r][c-1]!=0 and trace[r][c+1]!=0:
-            re = abs(trace[r][c+1] - trace[r][c-1])
-            result.append(re-2)
-    return result
+def shortcut6(trace, TEMP):
+    response = defaultdict(int)
+    for r,row in enumerate(trace):
+        for c,col in enumerate(row):
+            if col==0:
+                continue
 
+            for dr in range(-TEMP,0):
+                    for dc in range(-TEMP-dr,TEMP+dr+1):
+                        if 0<=r+dr<len(trace) and 0<=c+dc<len(trace[0]):
+                            if trace[r+dr][c+dc] == 0:
+                                continue
+                            if trace[r+dr][c+dc] - trace[r][c] - abs(dr) - abs(dc) >0:
+                                response[trace[r+dr][c+dc] - trace[r][c] - abs(dc) - abs(dr)]+=1
+            for dr in range(0,TEMP+1):
+                    for dc in range(-TEMP+dr,TEMP-dr+1):
+                        if 0<=r+dr<len(trace) and 0<=c+dc<len(trace[0]):
+                            if trace[r+dr][c+dc] == 0:
+                                continue
+                            if trace[r+dr][c+dc] - trace[r][c] - abs(dr) - abs(dc) >0:
+                                response[trace[r+dr][c+dc] - trace[r][c] - abs(dc) - abs(dr)]+=1
+    return response
 
 
 def part1(ls: str) -> int:
-    maze, width, heigh, start, end, walls = parse_data(ls)
+    maze, start, _ = parse_data(ls)
     trace = bfs(maze,start)
-    counter = Counter(shortcut(walls, trace))
-    count = 0
-    keys = list(counter.keys())
-    keys.sort()
-    for k in keys:
-        if k>=100:
-            print(k, counter[k])
-            count+=counter[k]
+    counter = shortcut6(trace, 2)
+    return sum(value for key,value in counter.items() if key>=100)
 
-    return count
 
 
 def part2(ls: str) -> int:
-    return 16
+    maze, start, _ = parse_data(ls)
+    trace = bfs(maze,start)
+    counter = shortcut6(trace, 20)
+    return sum(value for key,value in counter.items() if key>=100)
     
 
-
-response = part1
+response = part2

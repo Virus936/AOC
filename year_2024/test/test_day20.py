@@ -49,14 +49,15 @@ def test_resolve(data_from_aoc):
     if data_from_aoc is None:
         pytest.skip()
     else:
-        assert part1(data_from_aoc) == 260
+        assert part1(data_from_aoc) == 1375
 
 
 def test_resolve2_exemple(data1):
-    assert part2(data1) == 16
+    assert part2(data1) == 0
 
 def test_resolve2(data_from_aoc):
+    # pytest.skip()
     if data_from_aoc is None:
         pytest.skip()
     else:
-        assert part2(data_from_aoc) == 639963796864990
+        assert part2(data_from_aoc) == 983054
